@@ -1,7 +1,7 @@
-import { projectsArray, createProject, createTodo, setCurrentProject, getCurrentProject } from "./programLogic";
+import { projectsArray, createProject, createTodo, setCurrentProject, getCurrentProject, deleteTodos, loadFromLocalStorage } from "./programLogic";
 
 function showProject(){
-    
+    loadFromLocalStorage();
     let projectCreator = document.querySelector("#project-creation");
 
     const projectInputDiv = document.createElement("div");
@@ -47,9 +47,9 @@ function projectAddition(projectForm){
     document.querySelector("#project-list").appendChild(projectName);
 
     let newProject = createProject(projectForm.value);
-    projectsArray.push(newProject);
 
     projectName.id = newProject.id;
+
 
     projectName.addEventListener("click", function(){
         setCurrentProject(this.id);
@@ -69,6 +69,10 @@ function renderCurrentProject(){
     projectContentDiv.appendChild(addTodos);
 
     addTodos.addEventListener("click", function(){
+        if(document.querySelector("#todo-form-div")){
+            return;
+        };
+
         todoCreationForm();
     });
 
@@ -90,7 +94,7 @@ function todoCreationForm(){
     todoDesc.type = "text";
 
     const addTodo = document.createElement("button");
-    addTodo.innerText = "Add Todo";
+    addTodo.innerText = "Add";
 
     const cancelTodo = document.createElement("button");
     cancelTodo.innerText = "Cancel";
@@ -101,15 +105,19 @@ function todoCreationForm(){
     document.querySelector("#project-content").appendChild(todoFormDiv);
 
     addTodo.addEventListener("click", function(){
+
         if(todoTitle.value === "" || todoDate.value === "" || todoDesc.value === ""){
             alert("Please fill out the parameters");
             return
         };
-        let newTodo = createTodo(todoTitle.value, todoDate.value, todoDesc.value);
-        project.todos.push(newTodo);
-        console.log(project);
+
+        createTodo(todoTitle.value, todoDate.value, todoDesc.value);
         todoFormDiv.remove();
         renderTodos();
+    });
+
+    cancelTodo.addEventListener("click", function(){
+        todoFormDiv.remove();
     });
 
 };
@@ -117,15 +125,21 @@ function todoCreationForm(){
 function renderTodos(){
     let project = getCurrentProject();
     const projectContainer = document.querySelector("#project-content");
-    const todoCardsContainer = document.createElement("div");
-    todoCardsContainer.classList.add("todo-container");
+    let todoCardsContainer = document.querySelector(".todo-container");
+    
+    if(!todoCardsContainer){
+        todoCardsContainer = document.createElement("div");
+        todoCardsContainer.classList.add("todo-container");
+        projectContainer.appendChild(todoCardsContainer);
+    };
+    
+    todoCardsContainer.innerHTML = "";
 
     project.todos.forEach((todo) => {
-        
-        todoCardsContainer.innerHTML = "";
 
         const todoCardDiv = document.createElement("div");
         todoCardDiv.classList.add("todo-card");
+        todoCardDiv.id = todo.id;
 
         const todoTitle = document.createElement("h2");
         todoTitle.innerText = todo.name;
@@ -136,13 +150,36 @@ function renderTodos(){
         const todoDescription = document.createElement("p");
         todoDescription.innerText = todo.desc;
 
-        let cardArray = [todoTitle, todoDate, todoDescription];
+        const deleteTodo = document.createElement("button");
+        deleteTodo.classList.add("delete-button");
+        deleteTodo.innerText = "Delete Todo";
+
+        deleteTodo.addEventListener("click", function(){
+            let todoID = todoCardDiv.getAttribute("id");
+            deleteTodos(todoID);
+    
+        });
+
+        const editTodo = document.createElement("button");
+        editTodo.classList.add('edit-button');
+        editTodo.innerText = "Edit Todo";
+
+        editTodo.addEventListener("click", function(){
+            let todoID = todoCardDiv.getAttribute("id");
+            todoCreationForm();
+
+        });
+
+        let cardArray = [todoTitle, todoDate, todoDescription, deleteTodo, editTodo];
         cardArray.forEach(todo => todoCardDiv.appendChild(todo));
         todoCardsContainer.appendChild(todoCardDiv);
-        projectContainer.appendChild(todoCardsContainer);
 
     });
+ 
     
 };
 
-export { showProject };
+
+
+
+export { showProject, renderTodos };
