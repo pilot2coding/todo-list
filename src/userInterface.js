@@ -1,7 +1,7 @@
 import { projectsArray, createProject, createTodo, setCurrentProject, getCurrentProject, deleteTodos, loadFromLocalStorage } from "./programLogic";
 
 function showProject(){
-    loadFromLocalStorage();
+    
     let projectCreator = document.querySelector("#project-creation");
 
     const projectInputDiv = document.createElement("div");
@@ -60,6 +60,7 @@ function projectAddition(projectForm){
 };
 
 function renderCurrentProject(){
+
     const projectContentDiv = document.querySelector("#project-content");
     projectContentDiv.innerHTML = "";
     const addTodos = document.createElement("button");
@@ -79,7 +80,6 @@ function renderCurrentProject(){
 };
 
 function todoCreationForm(){
-    const project = getCurrentProject();
 
     const todoFormDiv = document.createElement("div");
     todoFormDiv.id = "todo-form-div";
@@ -179,7 +179,28 @@ function renderTodos(){
     
 };
 
+function renderStoredProjects(){
+    projectsArray.forEach(project => {
+        //project list div
+        const projectList = document.querySelector("#project-list");
+        
+        const projectNameButton = document.createElement("button");
+        projectNameButton.textContent = project.name;
+        projectNameButton.classList.add("project-name");
+        projectNameButton.id = project.id;
+
+        projectList.appendChild(projectNameButton);
+
+        projectNameButton.addEventListener("click", function(){
+            setCurrentProject(this.id);
+            renderCurrentProject();
+            renderTodos();
+        });
+        
+    });
+};
 
 
 
-export { showProject, renderTodos };
+
+export { showProject, renderTodos, renderStoredProjects };

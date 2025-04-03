@@ -12,7 +12,14 @@ function loadFromLocalStorage(){
     const storedProjects = localStorage.getItem("projects");
     if(storedProjects){
         const parseProjects = JSON.parse(storedProjects);
-        parseProjects.forEach(proj => projectsArray.push(proj));
+        projectsArray.length = 0;
+        const projectIds = new Set();
+        parseProjects.forEach(proj => {
+            if(!projectIds.has(proj.id)){
+                projectsArray.push(proj);
+                projectIds.add(proj.id);
+            }
+        });
     };
 };
 
