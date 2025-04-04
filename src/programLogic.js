@@ -82,5 +82,16 @@ function deleteTodos(todoIndex){
 
 };
 
+function updateTodos(todoID, newTitle, newDate, newDesc){
+    let project = getCurrentProject();
+    let projectTodos = project.todos;
+    const currentTodo = projectTodos.find(todo => todo.id === todoID);
+    currentTodo.name = newTitle;
+    currentTodo.date = newDate;
+    currentTodo.desc = newDesc;
+    saveToLocalStorage();
+    return currentTodo;
+};
 
-export { createProject, createTodo, projectsArray, setCurrentProject, getCurrentProject, deleteTodos, getCurrentTodo, saveToLocalStorage, loadFromLocalStorage };
+
+export { createProject, createTodo, projectsArray, setCurrentProject, getCurrentProject, deleteTodos, getCurrentTodo, saveToLocalStorage, loadFromLocalStorage, updateTodos };

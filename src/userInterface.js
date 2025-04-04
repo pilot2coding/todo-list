@@ -1,4 +1,4 @@
-import { projectsArray, createProject, createTodo, setCurrentProject, getCurrentProject, deleteTodos, loadFromLocalStorage } from "./programLogic";
+import { projectsArray, createProject, createTodo, setCurrentProject, getCurrentProject, deleteTodos, updateTodos } from "./programLogic";
 
 function showProject(){
     
@@ -110,6 +110,7 @@ function todoCreationForm(){
             alert("Please fill out the parameters");
             return
         };
+        //if (document.querySelector("#todo-form-div")) return;
 
         createTodo(todoTitle.value, todoDate.value, todoDesc.value);
         todoFormDiv.remove();
@@ -166,7 +167,7 @@ function renderTodos(){
 
         editTodo.addEventListener("click", function(){
             let todoID = todoCardDiv.getAttribute("id");
-            todoCreationForm();
+            editTodos(todoID);
 
         });
 
@@ -199,6 +200,62 @@ function renderStoredProjects(){
         
     });
 };
+
+function editTodos(todoID){
+    let project = getCurrentProject();
+    let currentTodo = project.todos.find(todo => todo.id === todoID);
+    const projectCard = document.querySelector(`.todo-card[id="${todoID}"]`);
+
+
+    const title = projectCard.querySelector("h2");
+    const oldTitle = title.innerText;
+    const date = projectCard.querySelector("h3");
+    const oldDate = date.innerText;
+    const desc = projectCard.querySelector("p");
+    const oldDesc = desc.innerText;
+    const deletes  = projectCard.querySelector(".delete-button");
+    const edit = projectCard.querySelector(".edit-button");
+
+    const titleInput = document.createElement("input");
+    titleInput.type = "text";
+    titleInput.value = title.innerText;
+
+    const dateInput = document.createElement("input");
+    dateInput.type = "date";
+    dateInput.value = date.innerText;
+
+    const descInput = document.createElement("input");
+    descInput.type = "text";
+    descInput.value = desc.innerText;
+
+    const acceptButton = document.createElement("button");
+    acceptButton.innerText = "Accept";
+
+    acceptButton.addEventListener("click", function(){
+        updateTodos(todoID, titleInput.value, dateInput.value, descInput.value);
+        renderTodos();
+    });
+    
+    const cancelButton = document.createElement("button");
+    cancelButton.innerText = "Cancel";
+
+    cancelButton.addEventListener("click", function(){
+        updateTodos(todoID, oldTitle, oldDate, oldDesc);
+        renderTodos();
+    });
+
+    let editionArray = [titleInput, dateInput, descInput, acceptButton, cancelButton];
+    let textArray = [title, date, desc, deletes, edit];
+
+    textArray.forEach(item =>{
+        item.remove();
+    });
+
+    editionArray.forEach(item => {
+        projectCard.appendChild(item);
+    });
+    console.log(currentTodo);
+}
 
 
 
