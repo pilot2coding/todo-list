@@ -1,4 +1,6 @@
-import { projectsArray, createProject, createTodo, setCurrentProject, getCurrentProject, deleteTodos, updateTodos } from "./programLogic";
+import { projectsArray, createProject, createTodo, setCurrentProject, getCurrentProject, deleteTodos, updateTodos, removeProject } from "./programLogic";
+
+let isEditing = false;
 
 function showProject(){
     
@@ -28,6 +30,7 @@ function showProject(){
             alert("Please, enter a name for the project");
             return
         };
+        if(isEditing) return;
         projectAddition(projectForm);
         projectCreator.innerHTML = "";
     });
@@ -63,18 +66,39 @@ function renderCurrentProject(){
 
     const projectContentDiv = document.querySelector("#project-content");
     projectContentDiv.innerHTML = "";
+    
+
     const addTodos = document.createElement("button");
     addTodos.id = "add-todos";
     addTodos.innerText = "Add Todo";
 
+    const deleteProject = document.createElement("button");
+    deleteProject.id = "delete-todos";
+    deleteProject.innerText = "Delete Project";
+
     projectContentDiv.appendChild(addTodos);
+    projectContentDiv.appendChild(deleteProject);
 
     addTodos.addEventListener("click", function(){
         if(document.querySelector("#todo-form-div")){
             return;
         };
 
+        if(isEditing) return;
+
         todoCreationForm();
+    });
+
+    deleteProject.addEventListener("click", function(){
+        const projectID = getCurrentProject() ? getCurrentProject().id : null;
+        removeProject();
+        if(projectID){
+            let removedProjectButton = document.querySelector(`#project-list button[id="${projectID}"]`);
+            document.querySelector("#project-content").innerHTML = "";
+            if(removedProjectButton){
+                removedProjectButton.remove();
+            };
+        };
     });
 
 };
@@ -125,6 +149,9 @@ function todoCreationForm(){
 
 function renderTodos(){
     let project = getCurrentProject();
+    if(!project){
+        return;
+    };
     const projectContainer = document.querySelector("#project-content");
     let todoCardsContainer = document.querySelector(".todo-container");
     
@@ -166,8 +193,11 @@ function renderTodos(){
         editTodo.innerText = "Edit Todo";
 
         editTodo.addEventListener("click", function(){
+            if(isEditing) return;
+            isEditing = true;
             let todoID = todoCardDiv.getAttribute("id");
             editTodos(todoID);
+            
 
         });
 
@@ -232,6 +262,7 @@ function editTodos(todoID){
     acceptButton.innerText = "Accept";
 
     acceptButton.addEventListener("click", function(){
+        isEditing = false;
         updateTodos(todoID, titleInput.value, dateInput.value, descInput.value);
         renderTodos();
     });
@@ -240,6 +271,7 @@ function editTodos(todoID){
     cancelButton.innerText = "Cancel";
 
     cancelButton.addEventListener("click", function(){
+        isEditing = false;
         updateTodos(todoID, oldTitle, oldDate, oldDesc);
         renderTodos();
     });

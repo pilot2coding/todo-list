@@ -82,6 +82,7 @@ function deleteTodos(todoIndex){
 
 };
 
+// function that updates the todo without changing the unique ID
 function updateTodos(todoID, newTitle, newDate, newDesc){
     let project = getCurrentProject();
     let projectTodos = project.todos;
@@ -93,5 +94,21 @@ function updateTodos(todoID, newTitle, newDate, newDesc){
     return currentTodo;
 };
 
+// function that removes the project from the array
+function removeProject(){
+    let project = getCurrentProject();
+    
+    if(!project){
+        return;
+    };
 
-export { createProject, createTodo, projectsArray, setCurrentProject, getCurrentProject, deleteTodos, getCurrentTodo, saveToLocalStorage, loadFromLocalStorage, updateTodos };
+    let projectIndex = projectsArray.findIndex(proj => proj.id === project.id);
+    if(projectIndex !== -1){
+        projectsArray.splice(projectIndex, 1);
+        saveToLocalStorage();
+        currentProjectID = null;
+    };
+};
+
+
+export { createProject, createTodo, projectsArray, setCurrentProject, getCurrentProject, deleteTodos, getCurrentTodo, saveToLocalStorage, loadFromLocalStorage, updateTodos, removeProject };
