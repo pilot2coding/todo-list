@@ -1,5 +1,5 @@
 import "./styles.css"
-import { renderStoredProjects, renderUrgentTodos, showProject } from "./userInterface"
+import { isUrgent, renderStoredProjects, renderUrgentTodos, showProject } from "./userInterface"
 import { projectsArray, loadFromLocalStorage, returnUrgentTodos } from "./programLogic";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -16,4 +16,5 @@ document.querySelector("#new").addEventListener("click", function(){
 document.querySelector("#urgent").addEventListener("click", function(){
     returnUrgentTodos();
     renderUrgentTodos();
+    
 });

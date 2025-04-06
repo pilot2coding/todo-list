@@ -115,7 +115,8 @@ function removeProject(){
 
 function returnUrgentTodos(){
     let today = new Date();
-
+    
+    
     // runs each project
     projectsArray.forEach(project => {
         // runs each todo inside the project
@@ -126,10 +127,12 @@ function returnUrgentTodos(){
             // converts difference to days
             const daysDiff = timeDiff / (1000 * 3600 * 24);
             
-            if(daysDiff <= 7 && daysDiff >= 0){
-                urgentTodoArray.push(todo);
+            if((daysDiff <= 7 && daysDiff >= 0)){
+                if(!urgentTodoArray.some(existing => existing.id === todo.id)){
+                    urgentTodoArray.push(todo);
+                };
             };
         });
     });
-}
+};
 export { createProject, createTodo, projectsArray, setCurrentProject, getCurrentProject, deleteTodos, getCurrentTodo, saveToLocalStorage, loadFromLocalStorage, updateTodos, removeProject, returnUrgentTodos, urgentTodoArray };

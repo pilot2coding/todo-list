@@ -3,6 +3,7 @@ import { format } from 'date-fns';
 import { enUS } from 'date-fns/locale';
 
 let isEditing = false;
+let isUrgent = false;
 
 function showProject(){
     
@@ -60,6 +61,7 @@ function projectAddition(projectForm){
         setCurrentProject(this.id);
         renderCurrentProject();
         renderTodos();
+        isUrgent = false;
     });
 
 };
@@ -77,9 +79,15 @@ function renderCurrentProject(){
     const deleteProject = document.createElement("button");
     deleteProject.id = "delete-todos";
     deleteProject.innerText = "Delete Project";
+    
+    if(isUrgent){
+        return;
+    } else {
+        projectContentDiv.appendChild(addTodos);
+        projectContentDiv.appendChild(deleteProject);
+    };
 
-    projectContentDiv.appendChild(addTodos);
-    projectContentDiv.appendChild(deleteProject);
+    
 
     addTodos.addEventListener("click", function(){
         if(document.querySelector("#todo-form-div")){
@@ -235,8 +243,14 @@ function renderStoredProjects(){
 };
 
 function renderUrgentTodos(){
+   // if(urgentTodoArray = []) return;
+    
+
     const projectContainer = document.querySelector("#project-content");
     let todoCardsContainer = document.querySelector(".todo-container");
+    if(todoCardsContainer){
+        todoCardsContainer.innerHTML = "";
+    }
     
     
     if(!todoCardsContainer){
@@ -287,8 +301,10 @@ function renderUrgentTodos(){
         let cardArray = [todoTitle, todoDate, todoDescription, deleteTodo, editTodo];
         cardArray.forEach(todo => todoCardDiv.appendChild(todo));
         todoCardsContainer.appendChild(todoCardDiv);
+        isUrgent = true;
 
     });
+    
  
 };
 
@@ -353,4 +369,4 @@ function editTodos(todoID){
 
 
 
-export { showProject, renderTodos, renderStoredProjects, renderUrgentTodos };
+export { showProject, renderTodos, renderStoredProjects, renderUrgentTodos, isUrgent };
