@@ -1,4 +1,6 @@
-import { projectsArray, createProject, createTodo, setCurrentProject, getCurrentProject, deleteTodos, updateTodos, removeProject } from "./programLogic";
+import { projectsArray, createProject, createTodo, setCurrentProject, getCurrentProject, deleteTodos, updateTodos, removeProject, urgentTodoArray } from "./programLogic";
+import { format } from 'date-fns';
+import { enUS } from 'date-fns/locale';
 
 let isEditing = false;
 
@@ -134,7 +136,7 @@ function todoCreationForm(){
             alert("Please fill out the parameters");
             return
         };
-        //if (document.querySelector("#todo-form-div")) return;
+        
 
         createTodo(todoTitle.value, todoDate.value, todoDesc.value);
         todoFormDiv.remove();
@@ -173,7 +175,8 @@ function renderTodos(){
         todoTitle.innerText = todo.name;
 
         const todoDate = document.createElement("h3");
-        todoDate.innerText = todo.date;
+        const formattedDate = format(new Date(todo.date), "EEEE d, MMMM yyyy", { locale: enUS});
+        todoDate.innerText = formattedDate;
 
         const todoDescription = document.createElement("p");
         todoDescription.innerText = todo.desc;
@@ -229,6 +232,64 @@ function renderStoredProjects(){
         });
         
     });
+};
+
+function renderUrgentTodos(){
+    const projectContainer = document.querySelector("#project-content");
+    let todoCardsContainer = document.querySelector(".todo-container");
+    
+    
+    if(!todoCardsContainer){
+        todoCardsContainer = document.createElement("div");
+        todoCardsContainer.classList.add("todo-container");
+        projectContainer.appendChild(todoCardsContainer);
+    };
+
+    urgentTodoArray.forEach((todo) => {
+
+        const todoCardDiv = document.createElement("div");
+        todoCardDiv.classList.add("todo-card");
+        todoCardDiv.id = todo.id;
+
+        const todoTitle = document.createElement("h2");
+        todoTitle.innerText = todo.name;
+
+        const todoDate = document.createElement("h3");
+        const formattedDate = format(new Date(todo.date), "EEEE d, MMMM yyyy", { locale: enUS});
+        todoDate.innerText = formattedDate;
+
+        const todoDescription = document.createElement("p");
+        todoDescription.innerText = todo.desc;
+
+        const deleteTodo = document.createElement("button");
+        deleteTodo.classList.add("delete-button");
+        deleteTodo.innerText = "Delete Todo";
+
+        deleteTodo.addEventListener("click", function(){
+            let todoID = todoCardDiv.getAttribute("id");
+            deleteTodos(todoID);
+    
+        });
+
+        const editTodo = document.createElement("button");
+        editTodo.classList.add('edit-button');
+        editTodo.innerText = "Edit Todo";
+
+        editTodo.addEventListener("click", function(){
+            if(isEditing) return;
+            isEditing = true;
+            let todoID = todoCardDiv.getAttribute("id");
+            editTodos(todoID);
+            
+
+        });
+
+        let cardArray = [todoTitle, todoDate, todoDescription, deleteTodo, editTodo];
+        cardArray.forEach(todo => todoCardDiv.appendChild(todo));
+        todoCardsContainer.appendChild(todoCardDiv);
+
+    });
+ 
 };
 
 function editTodos(todoID){
@@ -292,4 +353,4 @@ function editTodos(todoID){
 
 
 
-export { showProject, renderTodos, renderStoredProjects };
+export { showProject, renderTodos, renderStoredProjects, renderUrgentTodos };

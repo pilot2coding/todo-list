@@ -2,6 +2,9 @@ import {renderTodos} from "./userInterface"
 // global array that stores the user projects
 const projectsArray = [];
 
+// global array that stores urgent tasks
+const urgentTodoArray = [];
+
 // stores the projectsArray on the localStorage
 function saveToLocalStorage(){
     localStorage.setItem("projects", JSON.stringify(projectsArray));
@@ -110,5 +113,23 @@ function removeProject(){
     };
 };
 
+function returnUrgentTodos(){
+    let today = new Date();
 
-export { createProject, createTodo, projectsArray, setCurrentProject, getCurrentProject, deleteTodos, getCurrentTodo, saveToLocalStorage, loadFromLocalStorage, updateTodos, removeProject };
+    // runs each project
+    projectsArray.forEach(project => {
+        // runs each todo inside the project
+        project.todos.forEach(todo => {
+            const todoDateObj = new Date(todo.date);
+            // converts the difference to miliseconds
+            const timeDiff = todoDateObj.getTime() - today.getTime();
+            // converts difference to days
+            const daysDiff = timeDiff / (1000 * 3600 * 24);
+            
+            if(daysDiff <= 7 && daysDiff >= 0){
+                urgentTodoArray.push(todo);
+            };
+        });
+    });
+}
+export { createProject, createTodo, projectsArray, setCurrentProject, getCurrentProject, deleteTodos, getCurrentTodo, saveToLocalStorage, loadFromLocalStorage, updateTodos, removeProject, returnUrgentTodos, urgentTodoArray };
