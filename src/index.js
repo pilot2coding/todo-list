@@ -1,11 +1,13 @@
 import "./styles.css"
-import { isUrgent, renderStoredProjects, renderUrgentTodos, showProject } from "./userInterface"
-import { projectsArray, loadFromLocalStorage, returnUrgentTodos } from "./programLogic";
+import { renderStoredProjects, showProject } from "./userInterface"
+import { projectsArray, loadFromLocalStorage, returnUrgentTodos, returnDeletePastTodos } from "./programLogic";
 
 document.addEventListener("DOMContentLoaded", () => {
     loadFromLocalStorage();
     console.log("Proyectos: ", projectsArray);
     renderStoredProjects();
+    /*returnDeletePastTodos();*/
+    
 });
 
 document.querySelector("#new").addEventListener("click", function(){
@@ -13,8 +15,4 @@ document.querySelector("#new").addEventListener("click", function(){
     showProject();
 });
 
-document.querySelector("#urgent").addEventListener("click", function(){
-    returnUrgentTodos();
-    renderUrgentTodos();
-    
-});
+

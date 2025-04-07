@@ -1,9 +1,8 @@
-import { projectsArray, createProject, createTodo, setCurrentProject, getCurrentProject, deleteTodos, updateTodos, removeProject, urgentTodoArray } from "./programLogic";
+import { projectsArray, createProject, createTodo, setCurrentProject, getCurrentProject, deleteTodos, updateTodos, removeProject, urgentTodoArray, returnUrgentTodos, pastTodoArray } from "./programLogic";
 import { format } from 'date-fns';
 import { enUS } from 'date-fns/locale';
 
 let isEditing = false;
-let isUrgent = false;
 
 function showProject(){
     
@@ -56,12 +55,10 @@ function projectAddition(projectForm){
 
     projectName.id = newProject.id;
 
-
     projectName.addEventListener("click", function(){
         setCurrentProject(this.id);
         renderCurrentProject();
         renderTodos();
-        isUrgent = false;
     });
 
 };
@@ -71,7 +68,6 @@ function renderCurrentProject(){
     const projectContentDiv = document.querySelector("#project-content");
     projectContentDiv.innerHTML = "";
     
-
     const addTodos = document.createElement("button");
     addTodos.id = "add-todos";
     addTodos.innerText = "Add Todo";
@@ -79,16 +75,9 @@ function renderCurrentProject(){
     const deleteProject = document.createElement("button");
     deleteProject.id = "delete-todos";
     deleteProject.innerText = "Delete Project";
+    projectContentDiv.appendChild(addTodos);
+    projectContentDiv.appendChild(deleteProject);
     
-    if(isUrgent){
-        return;
-    } else {
-        projectContentDiv.appendChild(addTodos);
-        projectContentDiv.appendChild(deleteProject);
-    };
-
-    
-
     addTodos.addEventListener("click", function(){
         if(document.querySelector("#todo-form-div")){
             return;
@@ -243,14 +232,20 @@ function renderStoredProjects(){
 };
 
 function renderUrgentTodos(){
-   // if(urgentTodoArray = []) return;
-    
-
+   
     const projectContainer = document.querySelector("#project-content");
     let todoCardsContainer = document.querySelector(".todo-container");
     if(todoCardsContainer){
         todoCardsContainer.innerHTML = "";
-    }
+        const addTodosElement = document.querySelector("#add-todos");
+        if(addTodosElement){
+            addTodosElement.remove();
+        };
+        const deleteTodosElement = document.querySelector("#delete-todos");
+        if(deleteTodosElement){
+            deleteTodosElement.remove();
+        };
+    };
     
     
     if(!todoCardsContainer){
@@ -260,6 +255,54 @@ function renderUrgentTodos(){
     };
 
     urgentTodoArray.forEach((todo) => {
+        
+
+        const todoCardDiv = document.createElement("div");
+        todoCardDiv.classList.add("todo-card");
+        todoCardDiv.id = todo.id;
+
+        const todoTitle = document.createElement("h2");
+        todoTitle.innerText = todo.name;
+
+        const todoDate = document.createElement("h3");
+        const formattedDate = format(new Date(todo.date), "EEEE d, MMMM yyyy", { locale: enUS});
+        todoDate.innerText = formattedDate;
+
+        const todoDescription = document.createElement("p");
+        todoDescription.innerText = todo.desc;
+
+        let cardArray = [todoTitle, todoDate, todoDescription];
+        cardArray.forEach(todo => todoCardDiv.appendChild(todo));
+        todoCardsContainer.appendChild(todoCardDiv);
+
+    });
+};
+
+function renderPastTodos(){
+   
+    const projectContainer = document.querySelector("#project-content");
+    let todoCardsContainer = document.querySelector(".todo-container");
+    if(todoCardsContainer){
+        todoCardsContainer.innerHTML = "";
+        const addTodosElement = document.querySelector("#add-todos");
+        if(addTodosElement){
+            addTodosElement.remove();
+        };
+        const deleteTodosElement = document.querySelector("#delete-todos");
+        if(deleteTodosElement){
+            deleteTodosElement.remove();
+        };
+    };
+    
+    
+    if(!todoCardsContainer){
+        todoCardsContainer = document.createElement("div");
+        todoCardsContainer.classList.add("todo-container");
+        projectContainer.appendChild(todoCardsContainer);
+    };
+
+    pastTodoArray.forEach((todo) => {
+        
 
         const todoCardDiv = document.createElement("div");
         todoCardDiv.classList.add("todo-card");
@@ -301,12 +344,15 @@ function renderUrgentTodos(){
         let cardArray = [todoTitle, todoDate, todoDescription, deleteTodo, editTodo];
         cardArray.forEach(todo => todoCardDiv.appendChild(todo));
         todoCardsContainer.appendChild(todoCardDiv);
-        isUrgent = true;
 
     });
-    
- 
 };
+
+document.querySelector("#urgent").addEventListener("click", function(){
+    returnUrgentTodos();
+    renderUrgentTodos()
+    
+});
 
 function editTodos(todoID){
     let project = getCurrentProject();
@@ -369,4 +415,4 @@ function editTodos(todoID){
 
 
 
-export { showProject, renderTodos, renderStoredProjects, renderUrgentTodos, isUrgent };
+export { showProject, renderTodos, renderStoredProjects, renderUrgentTodos };
