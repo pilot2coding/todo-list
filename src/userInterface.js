@@ -1,4 +1,4 @@
-import { projectsArray, createProject, createTodo, setCurrentProject, getCurrentProject, deleteTodos, updateTodos, removeProject, urgentTodoArray, returnUrgentTodos, pastTodoArray } from "./programLogic";
+import { projectsArray, createProject, createTodo, setCurrentProject, getCurrentProject, deleteTodos, updateTodos, removeProject, urgentTodoArray, returnUrgentTodos, pastTodoArray, returnDeletePastTodos } from "./programLogic";
 import { format } from 'date-fns';
 import { enUS } from 'date-fns/locale';
 
@@ -278,6 +278,12 @@ function renderUrgentTodos(){
     });
 };
 
+document.querySelector("#urgent").addEventListener("click", function(){
+    returnUrgentTodos();
+    renderUrgentTodos()
+    
+});
+
 function renderPastTodos(){
    
     const projectContainer = document.querySelector("#project-content");
@@ -348,11 +354,11 @@ function renderPastTodos(){
     });
 };
 
-document.querySelector("#urgent").addEventListener("click", function(){
-    returnUrgentTodos();
-    renderUrgentTodos()
-    
+document.querySelector("#past").addEventListener("click", function(){
+    renderPastTodos();
 });
+
+
 
 function editTodos(todoID){
     let project = getCurrentProject();

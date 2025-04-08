@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
     loadFromLocalStorage();
     console.log("Proyectos: ", projectsArray);
     renderStoredProjects();
-    /*returnDeletePastTodos();*/
+    returnDeletePastTodos();
     
 });
 

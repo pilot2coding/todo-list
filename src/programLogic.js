@@ -11,6 +11,7 @@ const pastTodoArray = [];
 // stores the projectsArray on the localStorage
 function saveToLocalStorage(){
     localStorage.setItem("projects", JSON.stringify(projectsArray));
+    localStorage.setItem("pastTodos", JSON.stringify(pastTodoArray));
 };
 
 // loads the projectsArray from the localStorage
@@ -26,6 +27,12 @@ function loadFromLocalStorage(){
                 projectIds.add(proj.id);
             }
         });
+    };
+    const storedPastTodos = localStorage.getItem("pastTodos");
+    if(storedPastTodos){
+        const parsePastTodos = JSON.parse(storedPastTodos);
+        pastTodoArray.length = 0;
+        parsePastTodos.forEach(todo => pastTodoArray.push(todo));
     };
 };
 
@@ -140,7 +147,7 @@ function returnUrgentTodos(){
 };
 
 // function that stores past todos and deletes them from their original array
-/*function returnDeletePastTodos(){
+function returnDeletePastTodos(){
     let today = new Date();
 
     projectsArray.forEach(project => {
@@ -159,5 +166,5 @@ function returnUrgentTodos(){
         };
     });
     saveToLocalStorage();
-}*/
-export { createProject, createTodo, projectsArray, setCurrentProject, getCurrentProject, deleteTodos, getCurrentTodo, saveToLocalStorage, loadFromLocalStorage, updateTodos, removeProject, returnUrgentTodos, urgentTodoArray, /*returnDeletePastTodos,*/pastTodoArray };
+}
+export { createProject, createTodo, projectsArray, setCurrentProject, getCurrentProject, deleteTodos, getCurrentTodo, saveToLocalStorage, loadFromLocalStorage, updateTodos, removeProject, returnUrgentTodos, urgentTodoArray, returnDeletePastTodos, pastTodoArray };
