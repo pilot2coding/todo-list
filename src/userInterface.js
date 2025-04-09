@@ -1,4 +1,4 @@
-import { projectsArray, createProject, createTodo, setCurrentProject, getCurrentProject, deleteTodos, updateTodos, removeProject, urgentTodoArray, returnUrgentTodos, pastTodoArray, returnDeletePastTodos } from "./programLogic";
+import { projectsArray, createProject, createTodo, setCurrentProject, getCurrentProject, deleteTodos, updateTodos, removeProject, urgentTodoArray, returnUrgentTodos, pastTodoArray, returnDeletePastTodos, deletePastTodos } from "./programLogic";
 import { format } from 'date-fns';
 import { enUS } from 'date-fns/locale';
 
@@ -201,7 +201,10 @@ function renderTodos(){
 
         });
 
-        let cardArray = [todoTitle, todoDate, todoDescription, deleteTodo, editTodo];
+        const todoStatus = document.createElement("input");
+        todoStatus.type = "checkbox";
+
+        let cardArray = [todoTitle, todoDate, todoDescription, deleteTodo, editTodo, todoStatus];
         cardArray.forEach(todo => todoCardDiv.appendChild(todo));
         todoCardsContainer.appendChild(todoCardDiv);
 
@@ -330,28 +333,20 @@ function renderPastTodos(){
 
         deleteTodo.addEventListener("click", function(){
             let todoID = todoCardDiv.getAttribute("id");
-            deleteTodos(todoID);
+            deletePastTodos(todoID);
+            renderPastTodos();
     
         });
 
-        const editTodo = document.createElement("button");
-        editTodo.classList.add('edit-button');
-        editTodo.innerText = "Edit Todo";
+        
 
-        editTodo.addEventListener("click", function(){
-            if(isEditing) return;
-            isEditing = true;
-            let todoID = todoCardDiv.getAttribute("id");
-            editTodos(todoID);
-            
-
-        });
-
-        let cardArray = [todoTitle, todoDate, todoDescription, deleteTodo, editTodo];
+        let cardArray = [todoTitle, todoDate, todoDescription, deleteTodo];
         cardArray.forEach(todo => todoCardDiv.appendChild(todo));
         todoCardsContainer.appendChild(todoCardDiv);
 
     });
+
+    console.log(pastTodoArray);
 };
 
 document.querySelector("#past").addEventListener("click", function(){

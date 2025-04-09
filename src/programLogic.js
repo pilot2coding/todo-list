@@ -53,11 +53,12 @@ function createProject(name){
 };
 
 // function that creates a todo
-function createTodo(name, date, desc){
+function createTodo(name, date, desc, status){
     const newTodo = {
         name,
         date,
         desc,
+        status: false,
         id: crypto.randomUUID()
     };
 
@@ -93,6 +94,15 @@ function deleteTodos(todoIndex){
         renderTodos();
     };
 
+};
+
+// function that deletes the past todos
+function deletePastTodos(todoIndex){
+    if(todoIndex !== -1){
+        pastTodoArray.splice(todoIndex, 1);
+        saveToLocalStorage();
+        renderTodos();
+    };
 };
 
 // function that updates the todo without changing the unique ID
@@ -167,4 +177,4 @@ function returnDeletePastTodos(){
     });
     saveToLocalStorage();
 }
-export { createProject, createTodo, projectsArray, setCurrentProject, getCurrentProject, deleteTodos, getCurrentTodo, saveToLocalStorage, loadFromLocalStorage, updateTodos, removeProject, returnUrgentTodos, urgentTodoArray, returnDeletePastTodos, pastTodoArray };
+export { createProject, createTodo, projectsArray, setCurrentProject, getCurrentProject, deleteTodos, getCurrentTodo, saveToLocalStorage, loadFromLocalStorage, updateTodos, removeProject, returnUrgentTodos, urgentTodoArray, returnDeletePastTodos, pastTodoArray, deletePastTodos };
